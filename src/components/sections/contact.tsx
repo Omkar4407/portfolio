@@ -14,7 +14,7 @@ import SectionWrapper from "../ui/section-wrapper";
 
 const ContactSection = () => {
   return (
-    <SectionWrapper id="contact" className="min-h-screen max-w-7xl mx-auto ">
+    <SectionWrapper id="contact" className="min-h-screen max-w-7xl mx-auto pt-32 md:pb-24 md:pt-64">
       <SectionHeader id='contact' className="relative mb-14" title={
         <>
           LET&apos;S WORK <br />

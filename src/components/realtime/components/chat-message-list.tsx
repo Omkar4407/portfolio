@@ -36,7 +36,7 @@ export const ChatMessageList = ({
 }: ChatMessageListProps) => {
   return (
     <div className="flex-1 relative overflow-hidden flex flex-col">
-      <ScrollArea className="h-[400px]" data-lenis-prevent ref={chatContainerRef} type="always">
+      <ScrollArea className="h-[400px]" ref={chatContainerRef} type="always">
         <div className="p-4 space-y-0">
           {msgs.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-3 opacity-70 mt-10">

@@ -50,7 +50,7 @@ export const UserList = ({ users, socket, updateProfile, showUserList, onClose, 
                 Online — {users.length}
               </h3>
             </div>
-            <ScrollArea className="flex-1 px-2" data-lenis-prevent >
+            <ScrollArea className="flex-1 px-2">
               <div className="space-y-0.5 pb-4">
                 {sortedUsers.map((user) => (
                   <UserItem

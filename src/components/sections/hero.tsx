@@ -11,7 +11,7 @@ import {
 import { usePreloader } from "../preloader";
 import { BlurIn, BoxReveal } from "../reveal-animations";
 import ScrollDownIcon from "../scroll-down-icon";
-import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
+import { SiGithub, SiLinkedin } from "react-icons/si";
 import { config } from "@/data/config";
 
 import SectionWrapper from "../ui/section-wrapper";
@@ -48,17 +48,17 @@ const HeroSection = () => {
                 <BlurIn delay={1}>
                   <Tooltip delayDuration={300}>
                     <TooltipTrigger asChild>
-                      <h1
+                      <h3
                         className={cn(
                           "-ml-[6px] leading-none font-thin text-transparent text-slate-800 text-left",
-                          "font-thin text-7xl md:text-7xl lg:text-8xl xl:text-9xl",
+                          "font-thin text-5xl md:text-5xl lg:text-6xl xl:text-7xl",
                           "cursor-default text-edge-outline font-display "
                         )}
                       >
                         {config.author.split(" ")[0]}
                         <br className="md:block hiidden" />
                         {config.author.split(" ")[1]}
-                      </h1>
+                      </h3>
                     </TooltipTrigger>
                     <TooltipContent
                       side="top"
@@ -83,7 +83,7 @@ const HeroSection = () => {
               <div className="mt-8 flex flex-col gap-3 w-fit">
                 <Link
                   href={
-                    "https://drive.google.com/file/d/1O97WCk2DrO9x6SHOqf7LvRbmHkMgGIb4/view?usp=sharing"
+                    "https://drive.google.com/file/d/1f4XeYFMPsV4Ou1w-1wpZLa8GzydaWrgX/view?usp=sharing"
                   }
                   target="_blank"
                   className="flex-1"
@@ -112,14 +112,6 @@ const HeroSection = () => {
                     </TooltipContent>
                   </Tooltip>
                   <div className="flex items-center h-full gap-2">
-                    <Link
-                      href={config.social.twitter}
-                      target="_blank"
-                    >
-                      <Button variant={"outline"}>
-                        <SiX size={24} />
-                      </Button>
-                    </Link>
                     <Link
                       href={config.social.github}
                       target="_blank"

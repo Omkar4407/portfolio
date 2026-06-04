@@ -1,100 +1,90 @@
 "use client";
-import { Check, ChevronRight, Loader2 } from "lucide-react";
-import React from "react";
+import { ChevronRight, Loader2 } from "lucide-react";
+import React, { useEffect } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/ace-input";
 import { Textarea } from "./ui/ace-textarea";
 import { cn } from "@/lib/utils";
-import { useToast } from "./ui/use-toast";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
+import { config } from "@/data/config";
+import { useToast } from "./ui/use-toast";
 
 const ContactForm = () => {
-  const [fullName, setFullName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [message, setMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-
+  const [redirectUrl, setRedirectUrl] = React.useState("");
   const { toast } = useToast();
-  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch("/api/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName,
-          email,
-          message,
-        }),
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      toast({
-        title: "Thank you!",
-        description: "I'll get back to you as soon as possible.",
-        variant: "default",
-        className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4"),
-      });
-      setLoading(false);
-      setFullName("");
-      setEmail("");
-      setMessage("");
-      const timer = setTimeout(() => {
-        router.push("/");
-        clearTimeout(timer);
-      }, 1000);
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Something went wrong! Please check the fields.",
-        className: cn(
-          "top-0 w-full flex justify-center fixed md:max-w-7xl md:top-4 md:right-4"
-        ),
-        variant: "destructive",
-      });
+  // Set redirect URL on client side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setRedirectUrl(`${window.location.origin}/?success=true`);
     }
-    setLoading(false);
+  }, []);
+
+  // Show success message if redirected from FormSubmit
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("success") === "true") {
+        toast({
+          title: "Thank you!",
+          description: "I'll get back to you as soon as possible.",
+          variant: "default",
+          className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4"),
+        });
+        // Clean up URL
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+  }, [toast]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
+    // FormSubmit will handle the submission and redirect
+    // The form will submit normally to FormSubmit.co
   };
+
   return (
-    <form className="min-w-7xl mx-auto sm:mt-4" onSubmit={handleSubmit}>
+    <form
+      className="min-w-7xl mx-auto sm:mt-4"
+      action={`https://formsubmit.co/${config.email}`}
+      method="POST"
+      onSubmit={handleSubmit}
+    >
+      {/* FormSubmit hidden inputs */}
+      <input type="hidden" name="_subject" value="New Contact Form Message from Portfolio" />
+      <input type="hidden" name="_captcha" value="false" />
+      {redirectUrl && <input type="hidden" name="_next" value={redirectUrl} />}
+      <input type="hidden" name="_template" value="box" />
       <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
         <LabelInputContainer>
-          <Label htmlFor="fullname">Full name</Label>
+          <Label htmlFor="name">Full name</Label>
           <Input
-            id="fullname"
+            id="name"
+            name="name"
             placeholder="Your Name"
             type="text"
             required
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
           />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
+            name="email"
             placeholder="you@example.com"
             type="email"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           />
         </LabelInputContainer>
       </div>
       <div className="grid w-full gap-1.5 mb-4">
-        <Label htmlFor="content">Your Message</Label>
+        <Label htmlFor="message">Your Message</Label>
         <Textarea
-          placeholder="Tell me about about your project,"
-          id="content"
+          id="message"
+          name="message"
+          placeholder="Tell me about your project, or just say hi!"
           required
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
         />
         <p className="text-sm text-muted-foreground">
           I&apos;ll never share your data with anyone else. Pinky promise!

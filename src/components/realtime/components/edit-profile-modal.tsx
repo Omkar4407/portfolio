@@ -118,8 +118,8 @@ export const EditProfileModal = ({
           <div className={cn("text-xs font-medium uppercase tracking-wide mb-2", THEME.text.secondary)}>
             Avatar
           </div>
-          <ScrollArea className="flex-1 w-full rounded-lg border border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/20" data-lenis-prevent>
-            <div className="grid grid-cols-5 gap-1.5 p-2" data-lenis-prevent>
+          <ScrollArea className="flex-1 w-full rounded-lg border border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/20">
+            <div className="grid grid-cols-5 gap-1.5 p-2">
               {Array.from({ length: 100 }, (_, i) => (i + 1).toString()).map((seed) => (
                 <button
                   key={seed}

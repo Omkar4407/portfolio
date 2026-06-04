@@ -25,8 +25,10 @@ import {
 } from "react-icons/ri";
 import {
   SiExpress,
+  SiGithub,
   SiJavascript,
   SiKubuntu,
+  SiLinkedin,
   SiPm2,
   SiPrettier,
   SiTypescript,
@@ -43,27 +45,27 @@ import { TbTerminal2 } from "react-icons/tb";
 const CONTACT_LINKS = [
   {
     name: "Email",
-    content: "naresh.khatri2345@gmail",
-    href: "mailto:naresh.khatri2345@gmail.com",
+    content: "omkar.bomma2007@gmail.com",
+    href: "mailto:omkar.bomma2007@gmail.com",
     icon: <FaEnvelope height={"50px"} />,
   },
   {
     name: "Phone",
-    content: "1234567890",
-    href: "tel:1234567890",
+    content: "+91 9220888844",
+    href: "tel:+91 9220888844",
     icon: <FaPhone height={"50px"} />,
   },
   {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/naresh-khatri/",
-    content: "/naresh-khatri",
-    icon: <FaLinkedin height={"50px"} />,
+    href: "https://www.linkedin.com/in/omkar-bommakanti-0a0314365/",
+    content: "/omkar-bommakanti",
+    icon: <SiLinkedin size={"50px"} />,
   },
   {
     name: "GitHub",
-    href: "https://github.com/Naresh-Khatri",
-    content: "/naresh-khatri",
-    icon: <FaGithub height={"50px"} />,
+    href: "https://github.com/Omkar4407/",
+    content: "/Omkar4407",
+    icon: <SiGithub size={"50px"} />,
   },
 ];
 
@@ -251,7 +253,7 @@ function Page() {
                 />
               </div>
               <div className="flex flex-col gap-3 lg:items-center ml-10 md:ml-20 lg:ml-0">
-                <p className="text-center text-xl">Naresh Khatri</p>
+                <p className="text-center text-xl">Omkar Bommakanti</p>
                 <div className="text-xs bg-zinc-700 w-fit px-3 py-1 rounded-full">
                   Web Developer
                 </div>
@@ -287,7 +289,7 @@ function Page() {
           >
             <h1 className="text-3xl mb-10 lg:md-20">About me</h1>
             <p className="mb-10 text-roboto">
-              Hey there! I&apos;m Naresh, a Fullstack developer passionate about
+              Hey there! I'm Omkar, a Fullstack developer passionate about
               creating meaningful digital experiences. With great in Web
               development, I thrive on turning ideas into reality through coding
               and design. My journey began with a fascination for technology and
@@ -295,7 +297,7 @@ function Page() {
             </p>
             <p className="mb-10">
               When I&apos;m not coding, you can find me [Your
-              Interests/Hobbies], exploring new technologies, or sipping coffee
+              watching movies, exploring new technologies, or sipping coffee
               while brainstorming my next project.
             </p>
             <h1 className="text-3xl mb-10 lg:md-20">Stuff I use</h1>

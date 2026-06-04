@@ -248,40 +248,22 @@ export type Experience = {
 export const EXPERIENCE: Experience[] = [
   {
     id: 1,
-    startDate: "Dec 2024",
-    endDate: "Present",
-    title: "Full Stack Engineer",
-    company: "OmniNexus",
+    startDate: "August 2025",
+    endDate: "September 2025",
+    title: "Software & AI Automation Developer Intern",
+    company: "Adsmagnify Digital Solutions LLP",
     description: [
-      "Developing scalable full-stack applications involved in complex systems.",
-      "Optimizing database performance and query efficiency.",
-      "Collaborating on architectural decisions and technical strategy.",
-    ],
-    skills: [
-      SkillNames.NEXTJS,
-      SkillNames.TS,
-      SkillNames.POSTGRES,
-      SkillNames.DOCKER,
-      SkillNames.AWS,
-    ],
-  },
-  {
-    id: 2,
-    startDate: "Apr 2022",
-    endDate: "Dec 2024",
-    title: "Freelance Developer",
-    company: "Live & Learn",
-    description: [
-      "Delivered custom web solutions for diverse clients.",
-      "Managed full project lifecycles from design to deployment.",
-      "Maintained high client satisfaction through effective communication.",
+      "Developed and deployed production-ready websites, including fully custom-coded platforms and Shopify-based e-commerce solutions.",
+      "Worked extensively with React, HTML, CSS, JavaScript, and Python automation to build scalable and maintainable web applications.",
+      "Independently planned, executed, and delivered multiple projects within deadlines, handling both frontend and backend responsibilities."
     ],
     skills: [
       SkillNames.REACT,
-      SkillNames.NODEJS,
-      SkillNames.MONGODB,
-      SkillNames.TAILWIND,
-      SkillNames.WORDPRESS,
+      SkillNames.HTML,
+      SkillNames.CSS,
+      SkillNames.JS,
+      SkillNames.VERCEL,
+      SkillNames.NPM,
     ],
   },
 ];

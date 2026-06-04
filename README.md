@@ -47,7 +47,21 @@ Welcome to the repository for my personal portfolio website! This is where I sho
     yarn install
     ```
 
-4. Run the development server:
+4. Set up environment variables:
+
+    Create a `.env.local` file in the root directory and add your Resend API key:
+
+    ```bash
+    RESEND_API_KEY=your_resend_api_key_here
+    ```
+
+    To get your Resend API key:
+    - Sign up at [Resend](https://resend.com)
+    - Go to API Keys section
+    - Create a new API key
+    - Copy and paste it into your `.env.local` file
+
+5. Run the development server:
 
     ```bash
     npm run dev
@@ -55,7 +69,7 @@ Welcome to the repository for my personal portfolio website! This is where I sho
     yarn dev
     ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the magic!
+6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the magic!
 
 ## 🚀 Deployment
 

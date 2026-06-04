@@ -11,7 +11,6 @@ import {
 import { FloatingDock } from "../ui/floating-dock";
 import Link from "next/link";
 
-import SmoothScroll from "../smooth-scroll";
 import projects, { Project } from "@/data/projects";
 import { cn } from "@/lib/utils";
 import { SectionHeader } from "./section-header";
@@ -22,7 +21,7 @@ const ProjectsSection = () => {
   return (
     <SectionWrapper id="projects" className="max-w-7xl mx-auto md:h-[130vh]">
       <SectionHeader id='projects' title="Projects" />
-      <div className="grid grid-cols-1 md:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-3  mt-24 md:mt-32 gap-6 md:gap-8">
         {projects.map((project, index) => (
           <Modall key={project.src} project={project} />
         ))}
@@ -34,7 +33,7 @@ const Modall = ({ project }: { project: Project }) => {
   return (
     <div className="flex items-center justify-center">
       <Modal>
-        <ModalTrigger className="bg-transparent flex justify-center group/modal-btn">
+        <ModalTrigger className="bg-transparent !mt-8 flex justify-center group/modal-btn">
           <div
             className="relative w-[400px] h-auto rounded-lg overflow-hidden"
             style={{ aspectRatio: "3/2" }}
@@ -56,12 +55,10 @@ const Modall = ({ project }: { project: Project }) => {
             </div>
           </div>
         </ModalTrigger>
-        <ModalBody className="md:max-w-4xl md:max-h-[80%] overflow-auto">
-          <SmoothScroll isInsideModal={true}>
-            <ModalContent>
-              <ProjectContents project={project} />
-            </ModalContent>
-          </SmoothScroll>
+        <ModalBody className="md:max-w-4xl md:max-h-[80%] overflow-auto overscroll-contain">
+          <ModalContent>
+            <ProjectContents project={project} />
+          </ModalContent>
           <ModalFooter className="gap-4">
             <button className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
               Cancel

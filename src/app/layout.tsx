@@ -43,12 +43,16 @@ export const metadata: Metadata = {
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+  fallback: ["system-ui", "arial"],
 });
 
 const archivoBlack = Archivo_Black({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-display",
+  display: "swap",
+  fallback: ["system-ui", "sans-serif"],
 });
 
 export default function RootLayout({
@@ -66,7 +70,7 @@ export default function RootLayout({
         ></Script>
         {/* <Analytics /> */}
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <Providers>
           <Header />
           {children}
