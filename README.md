@@ -1,88 +1,170 @@
-# 🚀 My Portfolio Website
+# Omkar Bommakanti — Portfolio
 
-Welcome to the repository for my personal portfolio website! This is where I showcase my skills, projects, and a bit of my personality through jaw-dropping 3D animations, slick interactions, and fluid motion. If you're into creative web design, you're in the right place.
+My personal portfolio website. Built to reflect who I am as a developer — someone who ships real things, cares about the details, and doesn't do boring.
 
-![Portfolio Preview](https://github.com/Naresh-Khatri/Portfolio/blob/main/public/assets/projects-screenshots/portfolio/landing.png?raw=true)
+Live at: **[omkar.dev](https://nareshkhatri.site)** *(update this once deployed)*
 
-## 🔥 Features
+---
 
-- **3D Animations**: Custom-made interactive keyboard using Spline with skills as keycaps that reveal titles and descriptions on hover.
-- **Slick Interactions**: Powered by GSAP and Framer Motion for smooth animations on scroll, hover, and element reveal.
-- **Space Theme**: Particles on a dark background to simulate a cosmic environment, making the experience out of this world.
-- **Responsive Design**: Fully responsive across all devices to ensure the best user experience.
-- **Innovative Web Design**: Combining creativity with functionality to push the boundaries of modern web design.
+## What's inside
 
-## 🛠️ Tech Stack
+A full-featured portfolio with space-themed aesthetics, 3D interactions, smooth animations, and a contact form that actually works. Every section is intentional — no filler content, no template copy-paste.
 
-- **Frontend**: Next.js, React, Tailwind CSS, Shadcn, Aceternity UI
-- **Animations**: GSAP, Framer Motion, Spline Runtime
-- **Misc**: Resend, Socketio, Zod
+**Sections:**
+- **Hero** — First impression. Name, role, links to resume, GitHub, LinkedIn.
+- **Skills** — Interactive 3D keyboard built in Spline. Each keycap is a skill; hover to reveal.
+- **Projects** — 2×2 grid of real-world client projects I've shipped.
+- **Experience** — My internship at Adsmagnify Digital Solutions, where I built production websites and automation tools.
+- **Contact** — FormSubmit-powered form. No backend, no API keys, straight to my inbox.
 
-## 🚀 Getting Started
+---
+
+## Tech Stack
+
+| Layer | Tools |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS, SCSS |
+| UI Components | ShadCN UI, Aceternity UI, Radix UI |
+| Animations | Framer Motion, GSAP |
+| 3D | Spline Runtime |
+| Contact Form | FormSubmit.co |
+| Deployment | Vercel |
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js (v14+)
-- npm or yarn
+- Node.js v18+
+- npm, yarn, or pnpm
 
 ### Installation
 
-1. Clone the repository:
+```bash
+# Clone the repo
+git clone https://github.com/Omkar4407/portfolio.git
+cd portfolio
 
-    ```bash
-    git clone https://github.com/Naresh-Khatri/Portfolio.git
-    ```
+# Install dependencies
+npm install
+# or
+pnpm install
 
-2. Navigate to the project directory:
+# Start the dev server
+npm run dev
+```
 
-    ```bash
-    cd Portfolio
-    ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-3. Install dependencies:
+> **No `.env` file needed.** The contact form uses [FormSubmit.co](https://formsubmit.co) — no API keys, no backend setup required.
 
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
+---
 
-4. Set up environment variables:
+## Project Structure
 
-    Create a `.env.local` file in the root directory and add your Resend API key:
+```
+src/
+├── app/
+│   ├── about/          # About page
+│   ├── contact/        # Contact page
+│   ├── projects/       # Projects listing page
+│   ├── layout.tsx      # Root layout
+│   └── page.tsx        # Home page (all sections)
+├── components/
+│   ├── sections/       # Hero, Projects, Skills, Experience, Contact
+│   ├── ui/             # Reusable UI primitives
+│   ├── header/         # Navbar
+│   ├── footer/         # Footer
+│   └── ContactForm.tsx # FormSubmit-powered contact form
+├── data/
+│   ├── projects.tsx    # All project data (edit this to update projects)
+│   ├── constants.ts    # Skills, experience data
+│   └── config.ts       # Site-wide config (name, email, social links)
+└── hooks/              # Custom React hooks
+```
 
-    ```bash
-    RESEND_API_KEY=your_resend_api_key_here
-    ```
+---
 
-    To get your Resend API key:
-    - Sign up at [Resend](https://resend.com)
-    - Go to API Keys section
-    - Create a new API key
-    - Copy and paste it into your `.env.local` file
+## Customisation
 
-5. Run the development server:
+### Update your details
 
-    ```bash
-    npm run dev
-    # or
-    yarn dev
-    ```
+Everything personal lives in `src/data/config.ts`:
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the magic!
+```ts
+const config = {
+  author: "Omkar Bommakanti",
+  email: "omkar.bomma2007@gmail.com",
+  social: {
+    linkedin: "https://www.linkedin.com/in/omkar-bommakanti-0a0314365/",
+    github: "https://github.com/Omkar4407/",
+  },
+};
+```
 
-## 🚀 Deployment
+### Add or update projects
 
-This site is deployed on Vercel. For your own deployment, follow these steps:
+Edit `src/data/projects.tsx`. Each project object looks like:
 
-1. Push your code to a GitHub repository.
-2. Connect your repository to Vercel.
-3. Vercel will handle the deployment process.
+```ts
+{
+  id: "my-project",
+  category: "Category Label",
+  title: "Project Title",
+  src: "/assets/projects-screenshots/my-project/landing.png",
+  screenshots: ["landing.png"],
+  live: "https://myproject.com",
+  skills: {
+    frontend: [PROJECT_SKILLS.next, PROJECT_SKILLS.tailwind],
+    backend: [PROJECT_SKILLS.supabase],
+  },
+  content: <div>...</div>, // Modal content shown on click
+}
+```
 
-## 🤝 Contributing
+Drop project screenshots into `public/assets/projects-screenshots/<project-id>/`.
 
-If you'd like to contribute or suggest improvements, feel free to open an issue or submit a pull request. All contributions are welcome!
+### Update skills or experience
 
-## 📄 License
+Skills and experience data live in `src/data/constants.ts`. The `SKILLS` object maps skill names to icons and colours; `EXPERIENCE` is a straightforward array of job entries.
 
-This project is open source and available under the [MIT License](LICENSE).
+---
+
+## Contact Form
+
+The form uses [FormSubmit.co](https://formsubmit.co) — a free, zero-backend email forwarding service. When someone submits the form, the message is delivered directly to `omkar.bomma2007@gmail.com`.
+
+First-time setup: FormSubmit will send a one-time confirmation email to activate your address. Click confirm and it works forever after.
+
+No API keys. No `.env` file. No serverless functions. Nothing to configure.
+
+---
+
+## Deployment
+
+The site is deployed on Vercel.
+
+```bash
+# Build for production locally
+npm run build
+npm run start
+```
+
+To deploy your own fork:
+
+1. Push to GitHub
+2. Import the repo on [vercel.com](https://vercel.com)
+3. Hit Deploy — no environment variables needed
+
+---
+
+## License
+
+MIT — do whatever you want with it, just don't copy-paste it and call it your own portfolio. That'd be cringe.
+
+---
+
+Built by **Omkar Bommakanti** · [LinkedIn](https://www.linkedin.com/in/omkar-bommakanti-0a0314365/) · [GitHub](https://github.com/Omkar4407/)
