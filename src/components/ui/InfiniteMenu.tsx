@@ -4,6 +4,18 @@ import { useEffect, useRef, useState } from 'react';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import './InfiniteMenu.css';
 
+interface InfiniteMenuItem {
+  image: string;
+  link: string;
+  title: string;
+  description: string;
+}
+
+interface InfiniteMenuProps {
+  items?: InfiniteMenuItem[];
+  scale?: number;
+}
+
 const discVertShaderSource = `#version 300 es
 
 uniform mat4 uWorldMatrix;
@@ -912,7 +924,7 @@ const defaultItems = [
   }
 ];
 
-export default function InfiniteMenu({ items = [], scale = 1.0 }) {
+export default function InfiniteMenu({ items = [], scale = 1.0 }: InfiniteMenuProps) {
   const canvasRef = useRef(null);
   const [activeItem, setActiveItem] = useState(null);
   const [isMoving, setIsMoving] = useState(false);
