@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Archivo_Black } from "next/font/google";
 import "./globals.css";
+import "@/components/ui/FlowingMenu.css";
 import { config } from "@/data/config";
 
 import Header from "@/components/header/header";
@@ -14,6 +15,11 @@ export const metadata: Metadata = {
   description: config.description.long,
   keywords: config.keywords,
   authors: [{ name: config.author }],
+  icons: {
+    icon: '/assets/logo.svg',
+    shortcut: '/assets/logo.svg',
+    apple: '/assets/logo.svg',
+  },
   openGraph: {
     title: config.title,
     description: config.description.short,

@@ -9,13 +9,13 @@ import { sleep } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { usePreloader } from "./preloader";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/navigation";
 import { Section, getKeyboardState } from "./animated-background-config";
 import { useSounds } from "./realtime/hooks/use-sounds";
+import { usePerfProfile } from "@/hooks/use-perf-profile";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const AnimatedBackground = () => {
+const KeyboardScene = ({ maxDpr }: { maxDpr: number }) => {
   const { isLoading, bypassLoading } = usePreloader();
   const { theme } = useTheme();
   const isMobile = useMediaQuery("(max-width: 767px)");
@@ -29,11 +29,10 @@ const AnimatedBackground = () => {
   const [activeSection, setActiveSection] = useState<Section>("hero");
 
   // Animation controllers refs
-  const bongoAnimationRef = useRef<{ start: () => void; stop: () => void }>();
-  const keycapAnimationsRef = useRef<{ start: () => void; stop: () => void }>();
+  const bongoAnimationRef = useRef<{ start: () => void; stop: () => void }>(null);
+  const keycapAnimationsRef = useRef<{ start: () => void; stop: () => void }>(null);
 
   const [keyboardRevealed, setKeyboardRevealed] = useState(false);
-  const router = useRouter();
 
   // --- Event Handlers ---
 
@@ -107,7 +106,7 @@ const AnimatedBackground = () => {
     const kbd = splineApp.findObjectByName("keyboard");
     if (!kbd) return;
 
-    gsap.timeline({
+    return gsap.timeline({
       scrollTrigger: {
         trigger: triggerId,
         start,
@@ -131,10 +130,10 @@ const AnimatedBackground = () => {
     });
   };
 
-  const setupScrollAnimations = () => {
-    if (!splineApp || !splineContainer.current) return;
+  const setupScrollAnimations = (): gsap.core.Timeline[] => {
+    if (!splineApp || !splineContainer.current) return [];
     const kbd = splineApp.findObjectByName("keyboard");
-    if (!kbd) return;
+    if (!kbd) return [];
 
     // Initial state
     const heroState = getKeyboardState({ section: "hero", isMobile });
@@ -142,9 +141,11 @@ const AnimatedBackground = () => {
     gsap.set(kbd.position, heroState.position);
 
     // Section transitions
-    createSectionTimeline("#skills", "skills", "hero");
-    createSectionTimeline("#projects", "projects", "skills", "top 70%");
-    createSectionTimeline("#contact", "contact", "projects", "top 30%");
+    return [
+      createSectionTimeline("#skills", "skills", "hero"),
+      createSectionTimeline("#projects", "projects", "skills", "top 70%"),
+      createSectionTimeline("#contact", "contact", "projects", "top 30%"),
+    ].filter(Boolean) as gsap.core.Timeline[];
   };
 
   const getBongoAnimation = () => {
@@ -183,43 +184,52 @@ const AnimatedBackground = () => {
   const getKeycapsAnimation = () => {
     if (!splineApp) return { start: () => { }, stop: () => { } };
 
-    let tweens: gsap.core.Tween[] = [];
-    const removePrevTweens = () => tweens.forEach((t) => t.kill());
+    // Track the infinite "float" tweens separately from the finite "settle"
+    // tweens so start()/stop() each kill exactly what the other created — and
+    // never a tween a newer call has since started (a stale kill landing late is
+    // how the yoyo got stuck running on fast scrub).
+    let floatTweens: gsap.core.Tween[] = [];
+    let settleTweens: gsap.core.Tween[] = [];
+    const killFloat = () => { floatTweens.forEach((t) => t.kill()); floatTweens = []; };
+    const killSettle = () => { settleTweens.forEach((t) => t.kill()); settleTweens = []; };
 
     const start = () => {
-      removePrevTweens();
+      killSettle();
+      killFloat();
       Object.values(SKILLS)
         .sort(() => Math.random() - 0.5)
         .forEach((skill, idx) => {
           const keycap = splineApp.findObjectByName(skill.name);
           if (!keycap) return;
-          const t = gsap.to(keycap.position, {
-            y: Math.random() * 200 + 200,
-            duration: Math.random() * 2 + 2,
-            delay: idx * 0.6,
-            repeat: -1,
-            yoyo: true,
-            yoyoEase: "none",
-            ease: "elastic.out(1,0.3)",
-          });
-          tweens.push(t);
+          floatTweens.push(
+            gsap.to(keycap.position, {
+              y: Math.random() * 200 + 200,
+              duration: Math.random() * 2 + 2,
+              delay: idx * 0.6,
+              repeat: -1,
+              yoyo: true,
+              yoyoEase: "none",
+              ease: "elastic.out(1,0.3)",
+            })
+          );
         });
     };
 
     const stop = () => {
-      removePrevTweens();
+      killFloat();
+      killSettle();
+      // Finite — GSAP disposes them on completion, so no cleanup timer needed.
       Object.values(SKILLS).forEach((skill) => {
         const keycap = splineApp.findObjectByName(skill.name);
         if (!keycap) return;
-        const t = gsap.to(keycap.position, {
-          y: 0,
-          duration: 4,
-          repeat: 1,
-          ease: "elastic.out(1,0.7)",
-        });
-        tweens.push(t);
+        settleTweens.push(
+          gsap.to(keycap.position, {
+            y: 0,
+            duration: 4,
+            ease: "elastic.out(1,0.7)",
+          })
+        );
       });
-      setTimeout(removePrevTweens, 1000);
     };
 
     return { start, stop };
@@ -280,12 +290,18 @@ const AnimatedBackground = () => {
   useEffect(() => {
     if (!splineApp) return;
     handleSplineInteractions();
-    setupScrollAnimations();
+    const timelines = setupScrollAnimations();
     bongoAnimationRef.current = getBongoAnimation();
     keycapAnimationsRef.current = getKeycapsAnimation();
     return () => {
       bongoAnimationRef.current?.stop()
       keycapAnimationsRef.current?.stop()
+      // Kill the section ScrollTriggers so they don't orphan when the scene
+      // unmounts (e.g. toggling reduced motion) and fire on the disposed app.
+      timelines.forEach((tl) => {
+        tl.scrollTrigger?.kill();
+        tl.kill();
+      });
     }
 
   }, [splineApp, isMobile]);
@@ -327,7 +343,6 @@ const AnimatedBackground = () => {
 
   useEffect(() => {
     if (!selectedSkill || !splineApp) return;
-    // console.log(selectedSkill)
     splineApp.setVariable("heading", selectedSkill.label);
     splineApp.setVariable("desc", selectedSkill.shortDescription);
   }, [selectedSkill]);
@@ -336,6 +351,11 @@ const AnimatedBackground = () => {
   useEffect(() => {
     if (!splineApp) return;
 
+    // Marks this run superseded so the delayed (await sleep) start/stop calls
+    // below don't fire after activeSection has moved on — otherwise fast
+    // scrolling overlaps runs and a stale keycap start() can land last, leaving
+    // the float (yoyo) running forever.
+    let cancelled = false;
     let rotateKeyboard: gsap.core.Tween | undefined;
     let teardownKeyboard: gsap.core.Tween | undefined;
 
@@ -390,19 +410,23 @@ const AnimatedBackground = () => {
       // Handle Bongo Cat
       if (activeSection === "projects") {
         await sleep(300);
+        if (cancelled) return;
         bongoAnimationRef.current?.start();
       } else {
         await sleep(200);
+        if (cancelled) return;
         bongoAnimationRef.current?.stop();
       }
 
       // Handle Contact Section Animations
       if (activeSection === "contact") {
         await sleep(600);
+        if (cancelled) return;
         teardownKeyboard?.restart();
         keycapAnimationsRef.current?.start();
       } else {
         await sleep(600);
+        if (cancelled) return;
         teardownKeyboard?.pause();
         keycapAnimationsRef.current?.stop();
       }
@@ -411,6 +435,7 @@ const AnimatedBackground = () => {
     manageAnimations();
 
     return () => {
+      cancelled = true;
       rotateKeyboard?.kill();
       teardownKeyboard?.kill();
     };
@@ -418,12 +443,40 @@ const AnimatedBackground = () => {
 
   // Reveal keyboard on load/route change
   useEffect(() => {
-    const hash = activeSection === "hero" ? "#" : `#${activeSection}`;
-    router.push("/" + hash, { scroll: false });
+    // Rebuild the URL from the current pathname so the hash is always *replaced*
+    // rather than appended. Using router.push("/" + hash) stacked fragments on
+    // refresh (e.g. "/#skills#skills#skills") because the existing hash in the
+    // address bar was never stripped first. replaceState also avoids polluting
+    // browser history with an entry per scrolled-through section.
+    const hash = activeSection === "hero" ? "" : `#${activeSection}`;
+    const url = window.location.pathname + window.location.search + hash;
+    window.history.replaceState(window.history.state, "", url);
 
     if (!splineApp || isLoading || keyboardRevealed) return;
     updateKeyboardTransform();
   }, [splineApp, isLoading, activeSection]);
+
+  // Cap the renderer's pixel ratio once the scene is ready, and clean up the
+  // resize listener on unmount / DPR change (previously added in onLoad and
+  // never removed).
+  useEffect(() => {
+    if (!splineApp) return;
+    return capSplinePixelRatio(splineApp, maxDpr);
+  }, [splineApp, maxDpr]);
+
+  // Pause the entire WebGL render loop (and the keyboard's infinite tweens /
+  // bongo-cat interval, which are only visible through it) while the tab is
+  // hidden. Spline keeps rendering at full tilt in a background tab otherwise —
+  // a pointless, continuous GPU/battery drain.
+  useEffect(() => {
+    if (!splineApp) return;
+    const onVisibility = () => {
+      if (document.hidden) splineApp.stop();
+      else splineApp.play();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [splineApp]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -439,5 +492,48 @@ const AnimatedBackground = () => {
     </Suspense>
   );
 };
+
+/**
+ * Gate the heavy WebGL scene behind device/preference detection.
+ *
+ * The gate lives here in the parent (not inside KeyboardScene) on purpose: when
+ * 3D is disabled — e.g. the user toggles reduced motion — KeyboardScene fully
+ * UNMOUNTS, tearing down its Spline app, GSAP tweens, ScrollTriggers and reveal
+ * state. Re-enabling remounts it from a clean slate. (Gating with an internal
+ * early-return instead kept the component mounted, so it came back with stale
+ * `keyboardRevealed` state and never re-initialised the keycaps.)
+ *
+ * Waiting for `ready` also avoids a flash-mount that would fetch the heavy
+ * runtime chunk + scene before detection has run; the Preloader bypasses its
+ * splash when 3D is disabled.
+ */
+const AnimatedBackground = () => {
+  const { disable3D, maxDpr, ready } = usePerfProfile();
+  if (!ready || disable3D) return null;
+  return <KeyboardScene maxDpr={maxDpr} />;
+};
+
+/**
+ * Cap the Spline/Three.js renderer's pixel ratio. The scene is published with
+ * pixelRatio=0 ("device"), so on a 2–3x screen it renders 4–9x the pixels of a
+ * 1x canvas — a huge GPU cost. We clamp it and reapply on resize, since Spline
+ * re-reads devicePixelRatio when the canvas resizes. Returns a disposer that
+ * removes the resize listener (so it isn't leaked across reloads/unmounts).
+ */
+function capSplinePixelRatio(app: Application, maxDpr: number) {
+  const apply = () => {
+    try {
+      const renderer = (app as unknown as { _renderer?: { setPixelRatio?: (n: number) => void } })._renderer;
+      if (renderer?.setPixelRatio) {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxDpr));
+      }
+    } catch {
+      /* internal API moved — fail silent, scene still renders */
+    }
+  };
+  apply();
+  window.addEventListener("resize", apply, { passive: true });
+  return () => window.removeEventListener("resize", apply);
+}
 
 export default AnimatedBackground;

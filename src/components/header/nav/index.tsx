@@ -5,6 +5,7 @@ import { height } from "../anim";
 import Body from "./body/body";
 import Footer from "./footer/footer";
 import Image from "./image/image";
+import MenuFlowing from "./menu-flowing";
 
 import { links } from "@/components/header/config";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,9 @@ const Index: React.FC<IndexProps> = ({ setIsActive }) => {
     isActive: false,
     index: 0,
   });
+  
+  // Toggle between 2D and FlowingMenu (set to true for FlowingMenu)
+  const useFlowingMenu = true;
 
   return (
     <motion.div
@@ -32,22 +36,29 @@ const Index: React.FC<IndexProps> = ({ setIsActive }) => {
       exit="exit"
       className={styles.nav}
     >
-      <div className={cn(styles.wrapper, 'flex justify-end sm:justify-start')}>
-        <div className={styles.container}>
-          <Body
-            links={links}
-            selectedLink={selectedLink}
-            setSelectedLink={setSelectedLink}
-            setIsActive={setIsActive}
-          />
-          {/* <Footer /> */}
+      {useFlowingMenu ? (
+        // FlowingMenu
+        <div className="w-full h-full flex items-center justify-center">
+          <MenuFlowing setIsActive={setIsActive} />
         </div>
-        <Image
-          src={links[selectedLink.index].thumbnail}
-          isActive={selectedLink.isActive}
-        />
-        {/* <p>{links[selectedLink.index].thumbnail}</p> */}
-      </div>
+      ) : (
+        // Original 2D Menu
+        <div className={cn(styles.wrapper, 'flex justify-end sm:justify-start')}>
+          <div className={styles.container}>
+            <Body
+              links={links}
+              selectedLink={selectedLink}
+              setSelectedLink={setSelectedLink}
+              setIsActive={setIsActive}
+            />
+            {/* <Footer /> */}
+          </div>
+          <Image
+            src={links[selectedLink.index].thumbnail}
+            isActive={selectedLink.isActive}
+          />
+        </div>
+      )}
     </motion.div>
   );
 };

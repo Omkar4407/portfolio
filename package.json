@@ -30,8 +30,9 @@
     "devtools-detector": "^2.0.22",
     "embla-carousel-react": "^8.1.8",
     "framer-motion": "^11.3.17",
+    "gl-matrix": "^3.4.4",
     "gray-matter": "^4.0.3",
-    "gsap": "^3.12.5",
+    "gsap": "^3.15.0",
     "lucide-react": "^0.416.0",
     "motion": "^12.23.24",
     "next": "^14.2.35",
@@ -41,11 +42,13 @@
     "react-dom": "^18",
     "react-icons": "^5.2.1",
     "react-use-measure": "^2.1.7",
+    "resend": "^6.17.1",
     "sass": "^1.77.8",
     "socket.io-client": "^4.7.5",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "three": "^0.167.1"
+    "three": "^0.167.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^20",

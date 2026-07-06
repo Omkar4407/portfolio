@@ -48,13 +48,21 @@ export const ModalTrigger = ({
   className?: string;
 }) => {
   const { setOpen } = useModal();
+  
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Modal trigger clicked');
+    setOpen(true);
+  };
+  
   return (
     <button
+      type="button"
       className={cn(
-        "px-4 py-2 rounded-md text-black dark:text-white text-center relative overflow-hidden",
+        "px-4 py-2 rounded-md text-black dark:text-white text-center relative overflow-hidden pointer-events-auto",
         className
       )}
-      onClick={() => setOpen(true)}
+      onClick={handleClick}
     >
       {children}
     </button>
@@ -93,7 +101,7 @@ export const ModalBody = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
           exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-          className="modall fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full flex items-center justify-center z-50"
+          className="modall fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full flex items-center justify-center z-[9999] pointer-events-auto"
         >
           <Overlay />
 
@@ -101,7 +109,7 @@ export const ModalBody = ({
             ref={modalRef}
             className={cn(
               // removed overflow-hidden — it was clipping the scroll area
-              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1",
+              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-[10000] flex flex-col flex-1 pointer-events-auto",
               className
             )}
             initial={{ opacity: 0, scale: 0.5, rotateX: 40, y: 40 }}
@@ -161,7 +169,7 @@ const Overlay = ({ className }: { className?: string }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
       exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-      className={`modal-overlay fixed inset-0 h-full w-full bg-black bg-opacity-50 z-50 ${className}`}
+      className={`modal-overlay fixed inset-0 h-full w-full bg-black bg-opacity-50 z-[9998] pointer-events-auto ${className}`}
       onClick={() => setOpen(false)}
     />
   );
@@ -172,19 +180,20 @@ const CloseIcon = () => {
   return (
     <button
       onClick={() => setOpen(false)}
-      className="absolute top-4 right-4 group z-[9999]"
+      className="absolute top-4 right-4 group z-[9999] bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-full p-2 transition-all duration-200"
+      aria-label="Close modal"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="36"
-        height="36"
+        width="24"
+        height="24"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="text-black dark:text-white h-4 w-4 group-hover:scale-125 group-hover:rotate-3 transition duration-200"
+        className="text-neutral-700 dark:text-neutral-300 h-5 w-5 group-hover:scale-110 group-hover:rotate-90 transition-transform duration-200"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M18 6l-12 12" />
