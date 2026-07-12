@@ -212,7 +212,7 @@ const projects: Project[] = [
     title: "Malhar Passes",
     src: "/assets/projects-screenshots/malharpasses/landing.png",
     screenshots: ["landing.png"],
-    live: "#",
+    live: "https://passes.malharfest.in",
     shortDescription: "Production event ticketing platform with QR generation, payment integration, admin dashboard, and multi-role authentication.",
     skills: {
       frontend: [
